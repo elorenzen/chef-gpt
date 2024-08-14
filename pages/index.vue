@@ -1,9 +1,9 @@
 <template>
     <div>
-        <h1>Welcome to the homepage</h1>
-        <AppAlert>
-            This is an auto-imported component
-        </AppAlert>
+        <div class="flex justify-center p-2">
+            <h1 class="text-4xl">Welcome to the ChefGPT!</h1>
+        </div>
+        <Embedding />
     </div>
 </template>
 
