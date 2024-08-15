@@ -1,7 +1,7 @@
 <template>
     <div>
         <UContainer class="m-4">
-            <!-- <AppHeader /> -->
+            <AppHeader />
             <slot />
             <!-- <AppFooter /> -->
         </UContainer>
