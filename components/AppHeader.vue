@@ -1,19 +1,16 @@
-<template>
-    <div>
-HEADER
-    </div>
-</template>
+<script setup lang="ts">
+const route = useRoute()
 
-<script>
-export default {
-    setup () {
-        
-
-        return {}
-    }
-}
+const links = [
+  [{
+    label: 'Login/Register',
+    icon: 'i-heroicons-user',
+    to: '/auth'
+  }]
+]
 </script>
 
-<style lang="scss" scoped>
+<template>
+  <UHorizontalNavigation :links="links" class="border-b border-gray-200 dark:border-gray-800" />
+</template>
 
-</style>
