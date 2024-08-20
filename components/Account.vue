@@ -35,6 +35,7 @@ async function updateProfile() {
       avatar_url: avatar_path.value,
       updated_at: new Date(),
     }
+    console.log('updates: ', updates)
 
     const { error } = await supabase.from('profiles').upsert(updates, {
       returning: 'minimal', // Don't return the value after inserting
@@ -63,30 +64,19 @@ async function signOut() {
 
 <template>
   <form class="form-widget" @submit.prevent="updateProfile">
-    <div>
-      <label for="email">Email</label>
-      <input id="email" type="text" :value="user.email" disabled />
+    <Avatar v-model:path="avatar_path" @upload="updateProfile" />
+    <div class="m-2">
+        <label class="button primary block" for="email">Email</label>
+        <UInput id="email" class="inputField" type="email" placeholder="Email" :value="user.email" />
     </div>
-    <div>
-      <label for="username">Username</label>
-      <input id="username" type="text" v-model="username" />
-    </div>
-    <div>
-      <label for="website">Website</label>
-      <input id="website" type="url" v-model="website" />
+    <div class="m-2">
+        <label class="button primary block" for="username">Username</label>
+        <UInput id="username" class="inputField" placeholder="Username" :value="user.username" />
     </div>
 
-    <div>
-      <input
-        type="submit"
-        class="button primary block"
-        :value="loading ? 'Loading ...' : 'Update'"
-        :disabled="loading"
-      />
-    </div>
-
-    <div>
-      <button class="button block" @click="signOut" :disabled="loading">Sign Out</button>
+    <div class="flex justify-end px-2">
+        <div class="m-2"><UButton @click="updateProfile">{{ loading ? 'Loading ...' : 'Update Profile' }}</UButton></div>
+        <div class="m-2"><UButton color="indigo" @click="signOut">Sign Out</UButton></div>
     </div>
   </form>
 </template>
