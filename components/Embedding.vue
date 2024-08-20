@@ -8,16 +8,42 @@
             <div class="m-2"><UButton @click="getRecipes">Get recipes</UButton></div>
         </div>
 
-        <v-card class="ma-2 py-2" color="#BF360C" v-if="recipes !== '' && recipes.length > 0" v-for="recipe in recipes" :key="recipe.uri">
+        <v-card
+            class="ma-2 py-2"
+            color="#BF360C"
+            v-if="recipes !== '' && recipes.length > 0"
+            v-for="(recipe, index) in recipes" :key="recipe.uri">
           <v-row>
             <v-col cols="10">
               <v-card-title class="text-h5">{{ recipe.title }}</v-card-title>
               <v-row>
                 <v-col cols="6">
-                    <v-card-subtitle>Used ingredients: </v-card-subtitle>
+                    <v-card-subtitle class="text-h6 pl-6">Used ingredients: {{ recipe.usedIngredientCount }}</v-card-subtitle>
+                    <v-list class="bg-deep-orange-darken-4" density="compact">
+                        <v-list-item
+                            class="pl-8"
+                            disabled
+                            v-for="(item, i) in recipe.usedIngredients"
+                            :key="i"
+                            :value="item"
+                        >
+                            <v-list-item-title>{{ item.name }}</v-list-item-title>
+                        </v-list-item>
+                    </v-list>
                 </v-col>
                 <v-col cols="6">
-                    <v-card-subtitle>Needed ingredients: </v-card-subtitle>
+                    <v-card-subtitle class="text-h6 pl-6">Needed ingredients: {{ recipe.missedIngredientCount }}</v-card-subtitle>
+                    <v-list class="bg-deep-orange-darken-4" density="compact">
+                        <v-list-item
+                            class="pl-8"
+                            disabled
+                            v-for="(item, i) in recipe.missedIngredients"
+                            :key="i"
+                            :value="item"
+                        >
+                            <v-list-item-title>{{ item.name }}</v-list-item-title>
+                        </v-list-item>
+                    </v-list>
                 </v-col>
               </v-row>
 
@@ -30,26 +56,57 @@
                 ></v-btn>
               </v-card-actions> -->
             </v-col>
+                <v-col cols="2">
+                    <v-avatar
+                    rounded="sm"
+                    size="125"
+                    >
+                    <v-img :src="recipe.image"></v-img>
+                    </v-avatar>
 
-            <v-avatar
-              class="ma-3"
-              rounded="sm"
-              size="125"
-            >
-              <v-img class="rounded-":src="recipe.image"></v-img>
-            </v-avatar>
-
-            <!-- TURN TO EXPANSION PANEL -->
-            <!-- <v-btn
-                class="ma-2"
-                color="primary"
-                block
-                variant="text"
-            >
-                View Recipe
-                <v-icon icon="mdi-arrow-down" end></v-icon>
-            </v-btn> -->
-          </v-row>
+                    <v-btn
+                        class="mt-1"
+                        variant="text"
+                        @click="getRecipe(recipe.id, index)"
+                    >
+                        View Recipe
+                    </v-btn>
+                </v-col>
+            </v-row>
+            <v-card v-if="recipe.recipe" variant="outlined" color="grey-darken-4" class="mx-2">
+                <v-row>
+                    <!-- INGREDIENTS -->
+                    <v-col cols="6">
+                        <v-card-subtitle class="text-h6 pl-6">Ingredients</v-card-subtitle>
+                        <v-list class="bg-deep-orange-darken-4" density="compact">
+                            <v-list-item
+                                class="pl-8"
+                                disabled
+                                v-for="(item, i) in recipe.recipe.extendedIngredients"
+                                :key="i"
+                                :value="item"
+                            >
+                                <v-list-item-title>{{ item.original }}</v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-col>
+                    <!-- INSTRUCTIONS -->
+                    <v-col cols="6">
+                        <v-card-subtitle class="text-h6 pl-6">Instructions</v-card-subtitle>
+                        <v-list class="bg-deep-orange-darken-4" density="compact">
+                            <v-list-item
+                                class="pl-8"
+                                disabled
+                                v-for="(item, i) in recipe.recipe.analyzedInstructions[0].steps"
+                                :key="i"
+                                :value="item"
+                            >
+                                <v-list-item-title class="text-wrap">{{ item.number }} - {{ item.step }}</v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-col>
+                </v-row>
+            </v-card>
         </v-card>
     </div>
 </template>
@@ -62,6 +119,7 @@ export default {
 
         const input = ref('')
         const recipes = ref('')
+        const selectedRecipe = ref('')
 
         function clear() { input.value = '' }
         const getRecipes = async () => {
@@ -76,14 +134,23 @@ export default {
             });
             
             recipes.value = await $fetch(`${url}${paramStr}`, { method: 'GET' })
-            console.log('RES: ', res)
+            console.log('RES: ', recipes.value)
+        }
+
+        const getRecipe = async (id, index) => {
+            if (!recipes.value[index].recipe) {
+                const url = `https://api.spoonacular.com/recipes/${id}/information?apiKey=${config.public.foodId}`
+                recipes.value[index].recipe = await $fetch(url, { method: 'GET' })
+            }
         }
         
 
         return {
             input,
             recipes,
+            selectedRecipe,
             getRecipes,
+            getRecipe,
             clear
         }
     }

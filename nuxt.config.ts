@@ -35,7 +35,9 @@ export default defineNuxtConfig({
         'VIcon',
         'VListItemTitle',
         'VRow',
-        'VCol'
+        'VCol',
+        'VExpansionPanel',
+        'VExpansionPanels'
       ]
     }
   }
