@@ -37,7 +37,11 @@ export default defineNuxtConfig({
         'VRow',
         'VCol',
         'VExpansionPanel',
-        'VExpansionPanels'
+        'VExpansionPanels',
+        'VTextField',
+        'VSelect',
+        'VChip',
+        'VIcon'
       ]
     }
   }

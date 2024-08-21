@@ -1,11 +1,55 @@
 <template>
     <div>
         <div class="flex justify-center p-2">
-            <UTextarea placeholder="Enter your ingredients..." v-model="input"></UTextarea>
-        </div>
-        <div class="flex justify-center px-2">
-            <div class="m-2"><UButton color="indigo" @click="clear">Clear</UButton></div>
-            <div class="m-2"><UButton @click="getRecipes">Get recipes</UButton></div>
+            <v-row dense>
+                <!-- <v-col cols="2">
+                    <v-select
+                        color="secondary"
+                        clearable
+                        outlined
+                        label="Meal Type"
+                        v-model="selectedMealType"
+                        :items="mealTypes"
+                        prepend-inner-icon="mdi-filter-variant"
+                    >
+                    </v-select>
+                </v-col>
+                <v-col cols="3">
+                    <v-select
+                        color="secondary"
+                        clearable
+                        outlined
+                        label="Max. Cook Time"
+                        v-model="selectedMaxCookTime"
+                        :items="maxCookTimes"
+                        :item-title="e => e.text"
+                        :item-value="e => e.val"
+                        prepend-inner-icon="mdi-filter-variant"
+                    >
+                    </v-select>
+                </v-col> -->
+                <v-col cols="7">
+                    <v-text-field
+                        clearable
+                        v-model="input"
+                        outlined
+                        placeholder="Enter your ingredients separated by commas..."
+                        clear-icon="mdi-close-circle"
+                        @click:clear="clear"
+                    >
+                    <template v-slot:append
+                        ><v-btn
+                        style="margin-top: -3px"
+                        :disabled="!input || input.length < 1"
+                        @click="getRecipes"
+                        small
+                        color="accent"
+                        >Get Recipes</v-btn
+                    ></template
+                    >
+                    </v-text-field>
+                </v-col>
+            </v-row>
         </div>
 
         <v-card
@@ -46,15 +90,6 @@
                     </v-list>
                 </v-col>
               </v-row>
-
-              <!-- <v-card-actions>
-                <v-btn
-                  class="ms-2"
-                  size="small"
-                  text="START RADIO"
-                  variant="outlined"
-                ></v-btn>
-              </v-card-actions> -->
             </v-col>
                 <v-col cols="2">
                     <v-avatar
@@ -73,7 +108,7 @@
                     </v-btn>
                 </v-col>
             </v-row>
-            <v-card v-if="recipe.recipe" variant="outlined" color="grey-darken-4" class="mx-2">
+            <v-card v-if="recipe.recipe" variant="outlined" color="grey-darken-4 border-lg" class="ma-2">
                 <v-row>
                     <!-- INGREDIENTS -->
                     <v-col cols="6">
@@ -119,7 +154,32 @@ export default {
 
         const input = ref('')
         const recipes = ref('')
-        const selectedRecipe = ref('')
+
+        const mealTypes = ref([
+            'main course',
+            'side dish',
+            'dessert',
+            'appetizer',
+            'salad',
+            'bread',
+            'breakfast',
+            'soup',
+            'beverage',
+            'sauce',
+            'marinade',
+            'fingerfood',
+            'snack',
+            'drink'
+        ])
+        const selectedMealType = ref('')
+        const maxCookTimes = ref([
+            { text: '20 minutes', val: 20 },
+            { text: '30 minutes', val: 30 },
+            { text: '1 hour', val: 60 },
+            { text: '2 hours', val: 120 },
+            { text: '3 hours', val: 180 }
+        ])
+        const selectedMaxCookTime = ref(null)
 
         function clear() { input.value = '' }
         const getRecipes = async () => {
@@ -148,7 +208,10 @@ export default {
         return {
             input,
             recipes,
-            selectedRecipe,
+            mealTypes,
+            selectedMealType,
+            maxCookTimes,
+            selectedMaxCookTime,
             getRecipes,
             getRecipe,
             clear
